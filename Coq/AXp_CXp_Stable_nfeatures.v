@@ -1783,7 +1783,7 @@ Lemma my_induction :
   lia.
 Qed.
 
-Definition post_AXp (k : list T -> Tk) (i:nat) : Prop :=
+Definition R_implies_E_AXp (k : list T -> Tk) (i:nat) : Prop :=
   forall    (v vl vu: list T) (p:list nat), 
   (R0 k i v vl vu p /\
    R1 k i v vl vu p /\ R2 k i v vl vu p /\ R3 k i v vl vu p /\ R4 k i v vl vu p /\
@@ -4847,14 +4847,14 @@ Proof.
 Qed.
 
 
-Lemma pre_post_findAXp_aux : forall (k : list T -> Tk) ,
-   (stable k) -> (forall (i:nat),  i>=0 /\ i < nb_feature +1 -> post_AXp k i).
+Lemma R_implies_E_findAXp : forall (k : list T -> Tk) ,
+   (stable k) -> (forall (i:nat),  i>=0 /\ i < nb_feature +1 -> R_implies_E_AXp k i).
 Proof.
 intros k k_stable.
 apply (my_induction nb_feature).
 (* cas général *)
 split.
-unfold post_AXp.
+unfold R_implies_E_AXp.
 intros.
 destruct H.
 unfold E1.
@@ -4981,7 +4981,7 @@ lia.
 rewrite (surjective_pairing (freeAttr i vl vu)).
 apply Tk_tier_exclu.
 (* cas terminal *)
-unfold post_AXp.
+unfold R_implies_E_AXp.
 intros.
 split.
 (* post cond 1 *)
@@ -5021,6 +5021,84 @@ Program Definition findAXp (k : list T -> Tk) (v: list T) : list nat :=
   findAXp_aux k 0 v v v nil.
 
 
+Lemma R_init_Axp : forall (k : list T -> Tk)  (v: list T), 
+(length v = nb_feature
+/\ 
+(forall (j:nat), j>=0 /\ j< nb_feature -> 
+led (lambda j) (get j v) /\ led (get j v) (nu j))
+)
+-> R0 k 0 v v v nil /\ R1 k 0 v v v nil /\ R2 k 0 v v v nil /\ R3 k 0 v v v nil /\ 
+R4 k 0 v v v nil /\ R5 k 0 v v v nil /\ R6 k 0 v v v nil /\ R7 k 0 v v v nil /\ 
+R8 k 0 v v v nil /\ R9 k 0 v v v nil /\ R10 k 0 v v v nil.
+Proof.
+   intros.
+   split.
+   (* R0 *)
+   unfold R0.
+   tauto.
+   split.
+   (* R1 *)
+   destruct H.
+   unfold R1.
+   intros.
+   repeat split; [apply (H0 j H1)|apply (H0 j H1)|apply (H0 j)|apply (H0 j H1)|apply (H0 j H1)|apply (H0 j H1)].
+   apply H1.
+   split.
+   (* R2 *)
+   unfold R2.
+   simpl.
+   auto.
+   split.
+   (* R3 *)
+   unfold R3.
+   simpl.
+   lia.
+   split.
+   (* R4 *)
+   unfold R4.
+   simpl.
+   right.
+   generalize H.
+   simpl.
+   tauto.
+   split.
+   (* R5 *)
+   unfold R5.
+   simpl.
+   tauto.
+   split.
+   (* R6 *)
+   unfold R6.
+   simpl.
+   tauto.
+   split.
+   (* R7 *)
+   unfold R7.
+   simpl.
+   lia.
+   split.
+   (* R8 *)
+   unfold R8.
+   simpl.
+   tauto.
+   split.
+   (* R9 *)
+   unfold R9.
+   simpl.
+   tauto.
+   (* R10 *)
+   unfold R10.
+   simpl.
+   intros.
+   cut False.
+   tauto.
+   cut (x0 ++ x :: x1 <> nil).
+   intro.
+   auto.
+   apply (list_mem_not_nil x (x0 ++ x :: x1)).
+   apply list_mem_middle.
+Qed.
+
 Lemma pre_post_findAXp : forall (k : list T -> Tk)  (v: list T), 
 (
 stable k
@@ -5045,22 +5123,22 @@ length vu = nb_feature /\
 Proof.
    intros.
    destruct H as (k_stable, H).
-   cut (R0 k 0 v v v nil).
-   cut (R1 k 0 v v v nil).
-   cut (R2 k 0 v v v nil).
-   cut (R3 k 0 v v v nil).
-   cut (R4 k 0 v v v nil).
-   cut (R5 k 0 v v v nil).
-   cut (R6 k 0 v v v nil).
-   cut (R7 k 0 v v v nil).
-   cut (R8 k 0 v v v nil).
-   cut (R9 k 0 v v v nil).
-   cut (R10 k 0 v v v nil).
-   intros HR0 HR1 HR2 HR3 HR4 HR5 HR6 HR7 HR8 HR9 HR10.
+   generalize (R_init_Axp k v H).
+   intro HR.
+   destruct HR as (HR0,HR).
+   destruct HR as (HR1,HR).
+   destruct HR as (HR2,HR).
+   destruct HR as (HR3,HR).
+   destruct HR as (HR4,HR).
+   destruct HR as (HR5,HR).
+   destruct HR as (HR6,HR).
+   destruct HR as (HR7,HR).
+   destruct HR as (HR8,HR).
+   destruct HR as (HR9,HR10).
    split.
    (* post 1 *)
-   generalize pre_post_findAXp_aux.
-   unfold post_AXp.
+   generalize R_implies_E_findAXp.
+   unfold R_implies_E_AXp.
    unfold E1.
    intros.
    unfold findAXp.
@@ -5070,8 +5148,8 @@ Proof.
    tauto.
    split.
    (* post 2*)
-   generalize pre_post_findAXp_aux.
-   unfold post_AXp.
+   generalize R_implies_E_findAXp.
+   unfold R_implies_E_AXp.
    unfold E2.
    intros.
    unfold findAXp.
@@ -5080,72 +5158,14 @@ Proof.
    lia.
    tauto.
    (* post 3*)
-   generalize pre_post_findAXp_aux.
-   unfold post_AXp.
+   generalize R_implies_E_findAXp.
+   unfold R_implies_E_AXp.
    unfold E3.
    intro.
    unfold findAXp.
    apply H0.
    apply k_stable.
    lia.
-   tauto.
-   (* R10 *)
-   unfold R10.
-   simpl.
-   intros.
-   cut False.
-   tauto.
-   cut (x0 ++ x :: x1 <> nil).
-   intro.
-   auto.
-   apply (list_mem_not_nil x (x0 ++ x :: x1)).
-   apply list_mem_middle.
-   (* R9 *)
-   unfold R9.
-   simpl.
-   tauto.
-   (* R8 *)
-   unfold R8.
-   simpl.
-   tauto.
-   (* R7 *)
-   unfold R7.
-   simpl.
-   lia.
-   (* R6 *)
-   unfold R6.
-   simpl.
-   tauto.
-   (* R5 *)
-   unfold R5.
-   simpl.
-   tauto.
-   (* R4 *)
-   unfold R4.
-   simpl.
-   right.
-   generalize H.
-   simpl.
-   tauto.
-   (* R3 *)
-   unfold R3.
-   simpl.
-   lia.
-   (* R7 *)
-   unfold R7.
-   simpl.
-   (* R2 *)
-   unfold R2.
-   simpl.
-   auto.
-   (* R1 *)
-   destruct H.
-   unfold R1.
-   intros.
-   repeat split; [apply (H0 j H1)|apply (H0 j H1)|apply (H0 j)|apply (H0 j H1)|apply (H0 j H1)|apply (H0 j H1)].
-   apply H1.
-   (* R0 *)
-   unfold R0.
    tauto.
 Qed.
 
@@ -8794,7 +8814,7 @@ length vu = nb_feature /\
 /\ (k vl) = (k vu)).
 
 
-Definition post_CXp (k : list T -> Tk) (i:nat) : Prop :=
+Definition R_implies_E_CXp (k : list T -> Tk) (i:nat) : Prop :=
   forall (v vl vu: list T) (p:list nat), 
   (R0 k i v vl vu p /\
    R1 k i v vl vu p /\ R2_CXp k i v vl vu p /\ R3 k i v vl vu p /\ 
@@ -9050,14 +9070,16 @@ tauto.
 Qed.
 
 
-Lemma pre_post_findCXp_aux : 
-forall (k : list T -> Tk)  (i:nat),  i>=0 /\ i < nb_feature +1 -> post_CXp k i.
+
+
+Lemma R_implies_E_findCXp : 
+forall (k : list T -> Tk)  (i:nat),  i>=0 /\ i < nb_feature +1 -> R_implies_E_CXp k i.
 Proof.
 intro k.
 apply (my_induction nb_feature).
 (* cas général *)
 split.
-unfold post_CXp.
+unfold R_implies_E_CXp.
 intros.
 destruct H.
 unfold E1_CXp.
@@ -9180,7 +9202,7 @@ rewrite (surjective_pairing (fixAttr i v vl vu p)).
 rewrite (surjective_pairing (fst (fixAttr i v vl vu p))).
 tauto.
 (* cas terminal *)
-unfold post_CXp.
+unfold R_implies_E_CXp.
 intros.
 split.
 (* post cond 1 *)
@@ -9228,113 +9250,74 @@ Definition is_CXp (k : list T -> Tk) (v: list T) (p:list nat) : Prop :=
 
 
 
-
-Lemma pre_post_findCXp : forall (k : list T -> Tk) (v: list T), 
-(
-length v = nb_feature
+Lemma R_init_Cxp : 
+forall (k : list T -> Tk)  (v: list T), 
+(( length v = nb_feature
 /\ 
 (forall (j:nat), j>=0 /\ j< nb_feature -> 
-led (lambda j) (get j v) /\ led (get j v) (nu j))
+led (lambda j) (get j v) /\ led (get j v) (nu j)))
+/\ stable k
+/\ not_trivial k
 )
-/\ (stable k)
-/\ (not_trivial k)
--> 
-   is_weak_CXp k v (findCXp k v)
-/\ is_sorted (findCXp k v)
-/\ forall (x:nat), forall (x0 x1 : list nat), ((findCXp k v) = x0++(x::x1)
--> 
-exists (nvl nvu : list T),
-length nvl = nb_feature /\
-length nvu = nb_feature /\
-(forall (j:nat), j>=0 /\ j< nb_feature 
-  ->  ((mem j x1 \/ j>x) /\ get j nvl =lambda j /\ get j nvu =nu j) 
-        \/ ( (not (mem j x1 \/ j>x)) /\ get j nvl=get j v /\ get j nvu =get j v) ) 
-/\ (k nvl) = (k nvu)).
+-> R0 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R1 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R2_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R3 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R5 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R6_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R7_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R8 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R9_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil
+/\ R10_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil.
 Proof.
    intros.
    destruct H as (H,Hp).
    destruct Hp as (k_stable, k_not_trivial).
-   cut (R0 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R1 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R2_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R3 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R5 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R6_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R7_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R8 k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R9_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   cut (R10_CXp k 0 v (feature_f nb_feature lambda) (feature_f nb_feature nu) nil).
-   intros HR0 HR1 HR2 HR3 HR5 HR6 HR7 HR8 HR9 HR10.
    split.
-   (* post 1 *)
-   generalize pre_post_findCXp_aux.
-   unfold post_CXp.
-   unfold E1_CXp.
-   intros.
-   unfold findCXp.
-   apply H0.
-   lia.
-   tauto.
+   (* R0 *)
+   unfold R0.
    split.
-   (* post 2*)
-   generalize pre_post_findCXp_aux.
-   unfold post_CXp.
-   unfold E2_CXp.
+   apply H.
+   split.
+   apply (size_feature_f nb_feature lambda).
+   apply (size_feature_f nb_feature nu).
+   split.
+   (* R1 *)
+   destruct H.
+   unfold R1.
    intros.
-   unfold findCXp.
-   apply H0.
-   lia.
-   tauto.
-   (* post 3*)
-   generalize pre_post_findCXp_aux.
-   unfold post_CXp.
-   unfold E3_CXp.
-   intro.
-   unfold findCXp.
-   apply H0.
-   lia.
-   tauto.
-   auto.
-   (* R10 *)
-   unfold R10_CXp.
-   simpl.
-   intros.
-   cut False.
-   tauto.
-   cut (x0 ++ x :: x1 <> nil).
-   intro.
-   auto.
-   apply (list_mem_not_nil x (x0 ++ x :: x1)).
-   apply list_mem_middle.
-   (* R9 *)
-   unfold R9_CXp.
-   simpl.
-   lia.
-   (* R8 *)
-   unfold R8.
-   simpl.
-   tauto.
-   (* R7 *)
-   unfold R7_CXp.
-   simpl.
-   intros.
-   split.   
-   apply (def_feature_f j nb_feature lambda).
-   lia.
-   apply (def_feature_f j nb_feature nu).
-   lia.
-   (* R6 *)
-   unfold R6_CXp.
-   simpl.
-   tauto.
-   (* R5 *)
-   unfold R5.
-   simpl.
-   tauto.
-   (* R3 *)
-   unfold R3.
-   unfold not.
-   lia.
+   split.
+   apply (H0 j H1).
+   split.
+   apply (H0 j H1).
+   split.
+   cut (get j (feature_f nb_feature lambda) = lambda j).
+   intro r.
+   rewrite r.
+   apply led_eq.
+   reflexivity.
+   apply (def_feature_f j nb_feature lambda H1).
+   split.
+   cut (get j (feature_f nb_feature lambda) = lambda j).
+   intro r.
+   rewrite r.
+   apply (led_transitivity (lambda j) (get j v) (nu j)).
+   apply (H0 j H1).
+   apply (def_feature_f j nb_feature lambda H1).
+   split.
+   cut (get j (feature_f nb_feature nu) = nu j).
+   intro r.
+   rewrite r.
+   apply (led_transitivity (lambda j) (get j v) (nu j)).
+   apply (H0 j H1).
+   apply (def_feature_f j nb_feature nu H1).
+   cut (get j (feature_f nb_feature nu) = nu j).
+   intro r.
+   rewrite r.
+   apply led_eq.
+   reflexivity.
+   apply (def_feature_f j nb_feature nu H1).
+   split.
    (* R2 *)
    unfold R2_CXp.
    unfold not.
@@ -9477,48 +9460,121 @@ Proof.
       apply (H3 i H7).
       apply (def_feature_f i nb_feature nu H7).
       apply H0.
-   (* R1 *)
-   destruct H.
-   unfold R1.
+      split.
+      (* R3 *)
+      unfold R3.
+      unfold not.
+      lia.
+      split.
+      (* R5 *)
+      unfold R5.
+      simpl.
+      tauto.
+      split.
+      (* R6 *)
+      unfold R6_CXp.
+      simpl.
+      tauto.
+      split.
+      (* R7 *)
+      unfold R7_CXp.
+      simpl.
+      intros.
+      split.   
+      apply (def_feature_f j nb_feature lambda).
+      lia.
+      apply (def_feature_f j nb_feature nu).
+      lia.
+      split.
+      (* R8 *)
+      unfold R8.
+      simpl.
+      tauto.
+      split.
+      (* R9 *)
+      unfold R9_CXp.
+      simpl.
+      lia.
+      (* R10 *)
+      unfold R10_CXp.
+      simpl.
+      intros.
+      cut False.
+      tauto.
+      cut (x0 ++ x :: x1 <> nil).
+      intro.
+      auto.
+      apply (list_mem_not_nil x (x0 ++ x :: x1)).
+      apply list_mem_middle.
+Qed.
+
+
+
+Lemma pre_post_findCXp : forall (k : list T -> Tk) (v: list T), 
+(
+length v = nb_feature
+/\ 
+(forall (j:nat), j>=0 /\ j< nb_feature -> 
+led (lambda j) (get j v) /\ led (get j v) (nu j))
+)
+/\ (stable k)
+/\ (not_trivial k)
+-> 
+   is_weak_CXp k v (findCXp k v)
+/\ is_sorted (findCXp k v)
+/\ forall (x:nat), forall (x0 x1 : list nat), ((findCXp k v) = x0++(x::x1)
+-> 
+exists (nvl nvu : list T),
+length nvl = nb_feature /\
+length nvu = nb_feature /\
+(forall (j:nat), j>=0 /\ j< nb_feature 
+  ->  ((mem j x1 \/ j>x) /\ get j nvl =lambda j /\ get j nvu =nu j) 
+        \/ ( (not (mem j x1 \/ j>x)) /\ get j nvl=get j v /\ get j nvu =get j v) ) 
+/\ (k nvl) = (k nvu)).
+Proof.
    intros.
+   generalize (R_init_Cxp k v H).
+   destruct H as (H,Hp).
+   destruct Hp as (k_stable, k_not_trivial).
+   intro HR.
+   destruct HR as (HR0,HR).
+   destruct HR as (HR1,HR).
+   destruct HR as (HR2,HR).
+   destruct HR as (HR3,HR).
+   destruct HR as (HR5,HR).
+   destruct HR as (HR6,HR).
+   destruct HR as (HR7,HR).
+   destruct HR as (HR8,HR).
+   destruct HR as (HR9,HR10).
    split.
-   apply (H0 j H1).
+   (* post 1 *)
+   generalize R_implies_E_findCXp.
+   unfold R_implies_E_CXp.
+   unfold E1_CXp.
+   intros.
+   unfold findCXp.
+   apply H0.
+   lia.
+   tauto.
    split.
-   apply (H0 j H1).
-   split.
-   cut (get j (feature_f nb_feature lambda) = lambda j).
-   intro r.
-   rewrite r.
-   apply led_eq.
-   reflexivity.
-   apply (def_feature_f j nb_feature lambda H1).
-   split.
-   cut (get j (feature_f nb_feature lambda) = lambda j).
-   intro r.
-   rewrite r.
-   apply (led_transitivity (lambda j) (get j v) (nu j)).
-   apply (H0 j H1).
-   apply (def_feature_f j nb_feature lambda H1).
-   split.
-   cut (get j (feature_f nb_feature nu) = nu j).
-   intro r.
-   rewrite r.
-   apply (led_transitivity (lambda j) (get j v) (nu j)).
-   apply (H0 j H1).
-   apply (def_feature_f j nb_feature nu H1).
-   cut (get j (feature_f nb_feature nu) = nu j).
-   intro r.
-   rewrite r.
-   apply led_eq.
-   reflexivity.
-   apply (def_feature_f j nb_feature nu H1).
-   (* R0 *)
-   unfold R0.
-   split.
-   apply H.
-   split.
-   apply (size_feature_f nb_feature lambda).
-   apply (size_feature_f nb_feature nu).
+   (* post 2*)
+   generalize R_implies_E_findCXp.
+   unfold R_implies_E_CXp.
+   unfold E2_CXp.
+   intros.
+   unfold findCXp.
+   apply H0.
+   lia.
+   tauto.
+   (* post 3*)
+   generalize R_implies_E_findCXp.
+   unfold R_implies_E_CXp.
+   unfold E3_CXp.
+   intro.
+   unfold findCXp.
+   apply H0.
+   lia.
+   tauto.
 Qed.
 
 
