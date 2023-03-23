@@ -1,0 +1,6 @@
+(library
+ (name certxp)
+ (inline_tests)
+ (libraries pyml)
+ (preprocess
+  (pps ppx_inline_test)))
