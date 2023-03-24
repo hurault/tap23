@@ -232,20 +232,6 @@ Axiom nu_n : forall (j:nat), j >= nb_feature -> nu j = Exception.
 Parameter lambda : nat -> T.
 Axiom lambda_n : forall (j:nat), j >= nb_feature -> lambda j = Exception.
 
-(*** The classifier ***)
-(*
-Parameter k : list T -> Tk.
-*)
-
-(*
-Need a led on Tk - not needed for stablity
-Definition monotonic (k:list T -> Tk): Prop := forall (f1:list T) (f2:list T), 
-   List.length f1 = nb_feature 
-/\ List.length f2 = nb_feature
-/\ (forall (i:nat), 0<= i /\ i< nb_feature -> led (lambda i) (get i f1) /\ led (get i f1) (nu i) )
-/\ (forall (i:nat), 0<= i /\ i< nb_feature -> led (lambda i) (get i f2) /\ led (get i f2) (nu i) )
-/\ le_n f1 f2 -> led (k f1) (k f2).
-*)
 
 Definition stable (k:list T -> Tk): Prop := forall (f1:list T) (f2:list T) (x:list T), 
    List.length f1 = nb_feature 
@@ -255,36 +241,6 @@ Definition stable (k:list T -> Tk): Prop := forall (f1:list T) (f2:list T) (x:li
 /\ (forall (i:nat), 0<= i /\ i< nb_feature -> led (lambda i) (get i f2) /\ led (get i f2) (nu i) )
 /\ (forall (i:nat), 0<= i /\ i< nb_feature -> led (lambda i) (get i x) /\ led (get i x) (nu i) )
 /\ le_n f1 x /\ le_n x f2 /\ (k f1)=(k f2)-> (k f1)=(k x).
-
-(*
-Lemma monotonic_implies_stable : forall (k:list T -> Tk), monotonic k -> stable k.
-Proof.
-   unfold stable.
-   unfold monotonic.
-   intros.
-   destruct H0 as (S1,S). 
-   destruct S as (S2,S).
-   destruct S as (S3,S).
-   destruct S as (S4,S).
-   destruct S as (S5,S).
-   destruct S as (S6,S).
-   destruct S as (S7,S).
-   destruct S as (S8,S9).
-
-   cut (led (k0 f1) (k0 x)).
-   cut (led (k0 x) (k0 f2)).
-   intros M1 M2.
-   apply (led_borne (k0 f1) (k0 x) (k0 f2)).
-   repeat split; [apply M2|apply M1|apply S9].
-   
-   apply (H x f2).
-   auto.
-
-   apply (H f1 x).
-   auto.
-
-Qed.
-*)
 
 (* Need for CXp but not for AXp *)
 Definition not_trivial (k:list T -> Tk): Prop := exists (f1:list T) (f2:list T), 
