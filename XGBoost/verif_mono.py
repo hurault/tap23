@@ -125,20 +125,5 @@ else :
         Y = dataset.iloc[:,(nb_feature-1)] # not used
         verify (X.values,Y)
 
-        """
-        ### Print min and max for each feature
-        df = pd.DataFrame(X.values)
-        f_min = df.min()
-        f_max = df.max()
-        for i in range(len(feature_names)-1) :
-            print (feature_names[i]+" "+str(f_min[i])+" "+str(f_max[i]))
-        for i in range(len(feature_names)-1) :
-            print (str(f_min[i])+",",end="")
-        print()
-        for i in range(len(feature_names)-1) :
-            print (str(f_max[i])+",",end="")
-        print()
-        """
-
     else :
         help()
