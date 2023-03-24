@@ -3,9 +3,9 @@ import xgboost as xgb
 
 if (len(sys.argv) < 3 or sys.argv[1] == "-h"):
     print("--------------------------------")
-    print("predict_mono takes a model (json file), the number of classes and an instance and will make a prediction. \n")
-    print("\predict_mono usage :\n")
-    print("python3 predict_mono.py <model-json-file> ([feature 1],...,[feature n])")
+    print("predict takes a model (json file), an instance and will make a prediction. \n")
+    print("predict usage :\n")
+    print("python3 predict.py <model-json-file> ([feature 1],...,[feature n])")
     print("example :\n python3 predict.py models/car_evaluation.json \"(-3,-3,2,2,0,0)\"\n")
     print("--------------------------------")
     sys.exit()
