@@ -6,7 +6,6 @@ Files :
     - verif_mono.py : check if a model or a dataset is monotonic
     - verif_stable : check if a model or a dataset is stable
     - build_and_check.sh : build the four models (car_evaluation, heart, pokemon and placement) and check monotony and stability
-    - shap_explainer : generate shap explaination (for comparison)
 
 datasets :
     - the four datasets (csv)
