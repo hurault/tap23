@@ -66,18 +66,6 @@ model = xgb.train(params=params,
 y_pred = model.predict(dtest)
 predictions = [round(value) for value in y_pred]
 
-### End Xgboost Learning API
-
-"""
-### Scikit-learn API
-model = XGBClassifier()
-model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
-predictions = [round(value) for value in y_pred]
-
-### End Scikit-learn API
-"""
 ### Testing the XGBoost Model Performance
 accuracy = accuracy_score(y_test, predictions)
 print("Accuracy: %.2f%%" % (accuracy * 100.0))
