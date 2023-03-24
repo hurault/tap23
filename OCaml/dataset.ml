@@ -29,9 +29,9 @@ end
 (********************************)
 (**** POKEMON *******************)
 (********************************)
-module Pokemon : Dataset with type t = float and type tk=float = struct
+module Pokemon : Dataset with type t = float and type tk=int = struct
   type t = float
-  type tk = float
+  type tk = int
 
   let tk_eq_dec = ( = )
   let nb_feature = 31
@@ -109,7 +109,7 @@ module Pokemon : Dataset with type t = float and type tk=float = struct
   let t_of_string = float_of_string
 
   let float_of_t x = x
-  let tk_of_float x = x
+  let tk_of_float x = int_of_float x
 end
 
 
@@ -117,25 +117,9 @@ end
 (********************************)
 (**** PLACEMENT *****************)
 (********************************)
-module Placement : Dataset with type t = float and type tk=float = struct
+module Placement : Dataset with type t = float and type tk=int = struct
   type t = float
-  type tk = float
-  (*
-  let k lf =
-    let path = "../XGBoost/"
-    in
-    let path_models =
-      path^"models/"
-    in
-    let feature = to_string lf in
-    let cmd =
-      "python3 " ^ path ^ "predict.py " ^ path_models^D.model^".json  \"("^ feature ^ ")\""
-    in
-    let inp = Unix.open_process_in cmd in
-    let r = input_line inp in
-    let _ = Unix.close_process_in inp in
-    D.tk_of_string r
-*)
+  type tk = int
 
   let tk_eq_dec = ( = )
   let nb_feature = 7
@@ -165,7 +149,7 @@ module Placement : Dataset with type t = float and type tk=float = struct
 
   let t_of_string = float_of_string
   let float_of_t x = x
-  let tk_of_float x = x
+  let tk_of_float x = int_of_float x
 end
 
 
@@ -174,9 +158,9 @@ end
 (********************************)
 (**** CAR_EVALUATION ************)
 (********************************)
-module CarEvaluation: Dataset with type t = float and type tk=float = struct
+module CarEvaluation: Dataset with type t = float and type tk=int = struct
   type t = float
-  type tk = float
+  type tk = int
 
   let tk_eq_dec = ( = )
   let nb_feature = 6
@@ -203,16 +187,16 @@ module CarEvaluation: Dataset with type t = float and type tk=float = struct
 
   let t_of_string = float_of_string
   let float_of_t x = x
-  let tk_of_float x = x
+  let tk_of_float x = int_of_float x
 end
 
 
 (********************************)
 (**** HEART************)
 (********************************)
-module Heart: Dataset with type t = float and type tk=float = struct
+module Heart: Dataset with type t = float and type tk=int = struct
   type t = float
-  type tk = float
+  type tk = int
 
   let tk_eq_dec = ( = )
   let nb_feature = 11
@@ -249,7 +233,7 @@ module Heart: Dataset with type t = float and type tk=float = struct
 
   let t_of_string = float_of_string
   let float_of_t x = x
-  let tk_of_float x = x
+  let tk_of_float x = int_of_float x
 end
 
 
