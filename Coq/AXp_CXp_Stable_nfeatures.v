@@ -1429,8 +1429,6 @@ match p with
 | t :: q => (forall (e:nat), mem e q -> t>e) /\ is_sorted q
 end.
 
-(* moche mais plus facil à manipuler en coq *)
-(* La terminaison est évidente et la manipulation est plus simple qu'avec Programm Fixpoint *)
 (* i = nb_feature-j *)
 Fixpoint findAXp_aux_j (k : list T -> Tk)  (j:nat) (v vl vu: list T) (p:list nat) {struct j}:
 list nat :=
