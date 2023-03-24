@@ -156,37 +156,6 @@ if (sys.argv[1] == "-m") :
         instances = np.concatenate((X_train.values,X_test.values))
         predictions = np.concatenate((predictions_train,predictions_test))
         verify (instances,predictions)
-        """
-        ### Print the instances and their predictions
-        for i in range (len(instances)) :
-            for j in range (len(instances[i])) :
-                print (str(instances[i][j])+",",end="")
-            print (predictions[i])
-        """
-        ### End Xgboost Learning API
-        
-        """
-        ### Scikit-learn API
-
-        ### load the model
-        model = xgb.XGBClassifier()
-        model.load_model(sys.argv[2])
-
-        ### Making predictions on the Test Data
-        # split the data into a 0:100 train:test ratio -> ugly!
-        test_size = 0.5
-        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=test_size, random_state=7)
-        # prediction
-        y_pred_train = model.predict(X_train)
-        y_pred_test = model.predict(X_test)
-        predictions_test = [round(value) for value in y_pred_test]
-        predictions_train = [round(value) for value in y_pred_train]
-        instances = np.concatenate((X_train.values,X_test.values))
-        predictions = np.concatenate((predictions_train,predictions_test))
-        verify (instances,predictions)
-
-        ### End Scikit-learn API
-        """
 else :
     if (sys.argv[1] == "-d") :
         csv_file = sys.argv[2]
