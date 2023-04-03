@@ -1,5 +1,5 @@
 Require Import Extraction.
-Require Import Arith Lia Init.Datatypes Omega.
+Require Import Arith Lia Init.Datatypes.
 Require Import Coq.Program.Wf.
 Require Import Coq.Bool.Sumbool.
 Require Import Coq.Program.Equality.
